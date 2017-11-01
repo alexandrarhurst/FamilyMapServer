@@ -235,8 +235,10 @@ public class Services {
 
         //create man and woman
         Person man = new Person(child.getFather(), descendantUserName, fNames.getRandomFName(), child.getLastName(), 'm', manFatherID, manMotherID, child.getMother());
+        personDAO.add(man);
         newPersonsCount++;
         Person woman = new Person(child.getMother(), descendantUserName, mNames.getRandomMName(), sNames.getRandomSName(), 'f', womanFatherID, womanMotherID, child.getFather());
+        personDAO.add(woman);
         newPersonsCount++;
 
         //Generate man events
@@ -324,21 +326,15 @@ public class Services {
         Event[] events = input.getEvents();
 
         for(User u : users){
-            if(userDAO.add(u))
-                success = true;
-            else
+            if(!userDAO.add(u))
                 return new LoadResponse(INVALID_REQUEST_DATA);
         }
         for(Person p : persons){;
-            if(personDAO.add(p))
-                success = true;
-            else
+            if(!personDAO.add(p))
                 return new LoadResponse(INVALID_REQUEST_DATA);
         }
         for(Event e : events){
-            if(eventDAO.add(e))
-                success = true;
-            else
+            if(!eventDAO.add(e))
                 return new LoadResponse(INVALID_REQUEST_DATA);
         }
 
