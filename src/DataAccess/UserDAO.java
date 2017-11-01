@@ -175,6 +175,11 @@ public class UserDAO {
         return success;
     }
 
+    /**
+     * Clears all the data attached to a person
+     * @param username      Username as a string
+     * @return      True or false depending on if the clear worked.
+     */
     public boolean clearUserData(String username){
         boolean success = false;
 

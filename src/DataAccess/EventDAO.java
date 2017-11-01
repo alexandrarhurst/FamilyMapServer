@@ -46,6 +46,7 @@ public class EventDAO {
 
     /**
      * Used to get an Event from the table
+     * @param eventID The eventID to be returned as a string
      * @return Event
      */
     public Event retrieve(String eventID){
@@ -95,6 +96,11 @@ public class EventDAO {
         return event;
     }
 
+    /**
+     * Retrieve all the events attached to a user
+     * @param username  The user connected with the request
+     * @return  Returns those events in an array
+     */
     public Event[] retrieveEvents(String username){
 
         ArrayList<Event> events = new ArrayList(); //If null, not added to dao and will be created
@@ -194,7 +200,8 @@ public class EventDAO {
 
     /**
      * Deletes all the data attached to the amount of generations from the specified user
-     * @param username
+     * @param username  Username as a string
+     * @return true or false if it worked
      */
     public boolean deleteData(String username){
         boolean success = false;
@@ -233,6 +240,7 @@ public class EventDAO {
 
     /**
      * Used to clear the entire table
+     * @return true or false depending on if it worked.
      */
     public boolean clear(){
         boolean success = false;
@@ -270,7 +278,11 @@ public class EventDAO {
         return success;
     }
 
-
+    /**
+     * Returns a list of events connected to a person
+     * @param personID      The ID of the person
+     * @return  An array of event objects
+     */
     public Event[] getEventsFromPersonID(String personID){
 
         ArrayList<Event> events = new ArrayList(); //If null, not added to dao and will be created

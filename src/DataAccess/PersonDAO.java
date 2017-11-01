@@ -10,6 +10,9 @@ import java.util.ArrayList;
  */
 public class PersonDAO {
 
+    /**
+     * constructor
+     */
     public PersonDAO() {
         Connection c = null;
         Statement stmt = null;
@@ -96,6 +99,11 @@ public class PersonDAO {
 
     }
 
+    /**
+     * Returns all persons attached to a user
+     * @param username  Username as a string
+     * @return  An array of persons
+     */
     public Person[] retrievePersons(String username) {
 
         ArrayList<Person> persons = new ArrayList(); //If null, not added to dao and will be created

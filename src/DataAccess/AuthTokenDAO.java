@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 public class AuthTokenDAO {
 
+    /**
+     * Used as a constructor for the class
+     */
     public AuthTokenDAO() {
         Connection c = null;
         Statement stmt = null;
@@ -22,7 +25,7 @@ public class AuthTokenDAO {
             stmt = c.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS AuthToken" +
                     "(Auth_Token    VARCHAR(255)    NOT NULL UNIQUE," +
-                    "Username       VARCHAR(255)    NOT NULL UNIQUE," +
+                    "Username       VARCHAR(255)    NOT NULL," +
                     "Time_Created   VARCHAR(255)    NOT NULL);";
             stmt.executeUpdate(sql);
 
@@ -38,6 +41,9 @@ public class AuthTokenDAO {
         }
     }
 
+    /**
+     * Retrieve all the Authtokens
+     */
     public AuthToken[] retrieveAuthTokens(){
         ArrayList<AuthToken> authTokens = new ArrayList(); //If null, not added to dao and will be created
 
@@ -122,7 +128,6 @@ public class AuthTokenDAO {
 
         return authToken;
     }
-
 
 
     public AuthToken retrieveUsingAuthToken(String authToken){
@@ -247,6 +252,11 @@ public class AuthTokenDAO {
         return success;
     }
 
+    /**
+     * Used to delete a certain authtoken
+     * @param authToken     the authtoken as a string
+     * @return      Returns true if worked correctly
+     */
     public boolean delete(String authToken){
         boolean success = false;
 
@@ -280,6 +290,11 @@ public class AuthTokenDAO {
         return success;
     }
 
+    /**
+     * Used to update the time on an authtoken
+     * @param username      The username associated with the authtoken
+     * @return      The updated authtoken
+     */
     public AuthToken authTokenRefresh(String username) {
         AuthToken authToken = null;
 
@@ -329,6 +344,9 @@ public class AuthTokenDAO {
         return authToken;
     }
 
+    /**
+     * Deletes old authtokens
+     */
     public void updateAuthTokens(){
         AuthToken[] authTokens = this.retrieveAuthTokens();
 

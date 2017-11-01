@@ -135,7 +135,7 @@ public class Services {
      * @return LoginResponse
      */
     public LoginResponse login(LoginRequest loginRequest) {
-        authTokenDAO.updateAuthTokens();
+        //authTokenDAO.updateAuthTokens();
 
         if(loginRequest == null ||
                 loginRequest.getUserName() == null ||
@@ -154,6 +154,7 @@ public class Services {
                 if(authTokenDAO.retrieve(loginRequest.getUserName()) == null){
                     authToken = new AuthToken();
                     authToken.generate(loginRequest.getUserName());
+                    authTokenDAO.add(authToken);
                 } else{
                     authTokenDAO.authTokenRefresh(loginRequest.getUserName());
                     authToken = authTokenDAO.retrieve(loginRequest.getUserName());
@@ -353,11 +354,11 @@ public class Services {
      * @return PersonResponse     A PersonResponse object of all the information to be returned
      */
     public PersonResponse person(String authToken, String personID) {
-        updateAuthTokens(authToken);
+        //updateAuthTokens(authToken);
 
         if (authTokenDAO.retrieveUsingAuthToken(authToken) != null) {
             if (personID != null) {      //If ID is given
-                if(authTokenDAO.retrieveUsingAuthToken(authToken).getUsername() == personDAO.retrieve(personID).getDescendant()) {          //If authtoken user matches descendant
+                if(authTokenDAO.retrieveUsingAuthToken(authToken).getUsername().equals(personDAO.retrieve(personID).getDescendant())) {          //If authtoken user matches descendant
                     AuthToken authTokenObject = authTokenDAO.retrieveUsingAuthToken(authToken);
                     Person person = personDAO.retrieve(personID);
 
@@ -382,12 +383,12 @@ public class Services {
      * @return EventResponse    An EventResponse with all the information requested.
      */
     public EventResponse event(String authToken, String eventID) {
-        updateAuthTokens(authToken);
+        //updateAuthTokens(authToken);
 
         if(authTokenDAO.retrieveUsingAuthToken(authToken) != null){         //If authtoken is valid
             if(eventID != null) {      //If ID is given
 
-                if(authTokenDAO.retrieveUsingAuthToken(authToken).getUsername() == eventDAO.retrieve(eventID).getDescendant()) {      //If authtoken user matches descendant
+                if(authTokenDAO.retrieveUsingAuthToken(authToken).getUsername().equals(eventDAO.retrieve(eventID).getDescendant())) {      //If authtoken user matches descendant
                     AuthToken authTokenObject = authTokenDAO.retrieveUsingAuthToken(authToken);
                     Event event = eventDAO.retrieve(eventID);
 
