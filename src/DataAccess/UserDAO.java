@@ -172,6 +172,9 @@ public class UserDAO {
             }
         }
 
+        //Calling the constructor creates the table again
+        new UserDAO();
+
         return success;
     }
 

@@ -80,7 +80,11 @@ public class AuthTokenDAO {
         }
 
         AuthToken[] returnAuthTokens = new AuthToken[authTokens.size()];
-        return authTokens.toArray(returnAuthTokens);
+        if(returnAuthTokens.length == 0){
+            return null;
+        } else {
+            return authTokens.toArray(returnAuthTokens);
+        }
     }
 
 
@@ -258,6 +262,12 @@ public class AuthTokenDAO {
      * @return      Returns true if worked correctly
      */
     public boolean delete(String authToken){
+        // validate
+        if(authToken == null)
+            return false;
+        else if(retrieveUsingAuthToken(authToken) == null)
+            return false;
+
         boolean success = false;
 
         Connection c = null;
@@ -269,6 +279,8 @@ public class AuthTokenDAO {
             c.setAutoCommit(false);
 
             sql = c.prepareStatement("DELETE FROM AuthToken WHERE Auth_Token=?;");
+
+            sql.setString(1, authToken);
 
             sql.executeUpdate();
 
@@ -351,7 +363,7 @@ public class AuthTokenDAO {
         AuthToken[] authTokens = this.retrieveAuthTokens();
 
         for(AuthToken a : authTokens){
-            if (!LocalTime.now().isBefore(a.getTime().plusMinutes(60))){
+            if (LocalTime.now().isAfter(a.getTime().plusMinutes(60))){
                 this.delete(a.getAuthToken());
             }
         }

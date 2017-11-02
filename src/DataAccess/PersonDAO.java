@@ -101,10 +101,13 @@ public class PersonDAO {
 
     /**
      * Returns all persons attached to a user
-     * @param username  Username as a string
+     * @param descendant  Username as a string
      * @return  An array of persons
      */
-    public Person[] retrievePersons(String username) {
+    public Person[] retrievePersons(String descendant) {
+
+        if(descendant == null)
+            return null;
 
         ArrayList<Person> persons = new ArrayList(); //If null, not added to dao and will be created
 
@@ -118,13 +121,13 @@ public class PersonDAO {
             c.setAutoCommit(false);
 
             sql = c.prepareStatement("SELECT * FROM Person WHERE Descendant=?");
-            sql.setString(1, username);
+            sql.setString(1, descendant);
 
             rs = sql.executeQuery();
 
             while (rs.next()) {
                 String person_id = rs.getString("Person_Id");
-                String descendant = rs.getString("Descendant");
+                String desc = rs.getString("Descendant");
                 String first_name = rs.getString("First_Name");
                 String last_name = rs.getString("Last_Name");
                 char gender = rs.getString("Gender").charAt(0);
@@ -132,7 +135,7 @@ public class PersonDAO {
                 String mother_id = rs.getString("Mother");
                 String spouse_id = rs.getString("Spouse");
 
-                persons.add(new Person(person_id, descendant,
+                persons.add(new Person(person_id, desc,
                         first_name, last_name, gender,
                         father_id, mother_id, spouse_id));
             }
@@ -150,7 +153,10 @@ public class PersonDAO {
         }
 
         Person[] returnPersons = new Person[persons.size()];
-        return persons.toArray(returnPersons);
+        if(returnPersons.length == 0)
+            return null;
+        else
+            return persons.toArray(returnPersons);
     }
 
     /**
@@ -233,7 +239,8 @@ public class PersonDAO {
                 e1.printStackTrace();
             }
         }
+
+
         return success;
     }
 }
-

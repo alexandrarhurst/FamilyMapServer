@@ -2,7 +2,6 @@ package Model;
 
 
 import DataAccess.*;
-import Service.Services;
 
 import java.util.Random;
 
@@ -62,7 +61,11 @@ public class Person {
 
     public Event getBirth(){
         EventDAO eventDAO = new EventDAO();
-        Event[] events = eventDAO.getEventsFromPersonID(this.personID);
+        Event[] events = eventDAO.retrieveEventsUsingPersonID(this.personID);
+
+        if(events == null){
+            return null;
+        }
 
         for(Event e : events){
             if(e.getEventType().equals(Event.BIRTH))       //Check to see if equals works

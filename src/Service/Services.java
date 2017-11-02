@@ -29,6 +29,8 @@ public class Services {
     public static final String INCORRECT_GENERATIONS_PARAM = "Error: Generations must be greater than or equal to 1";
     public static final String INVALID_USERNAME = "Error: Invalid Username";
     public static final String INTERNAL_SERVER_ERROR = "Error: Internal Server Error";
+    public static final String NO_EVENTID_ERROR = "Error: Event ID does not exist";
+    public static final String NO_PERSONID_ERROR = "Error: Event ID does not exist";
 
     // Used for to calculate the response for the register
     private static int newPersonsCount = 0;
@@ -205,7 +207,12 @@ public class Services {
             newEventsCount = 0;
 
             Person person = personDAO.retrieve(userDAO.retrieve(username).getPersonID());
-            int birthYear = person.getBirth().getYear();
+
+            int birthYear;
+            if(person.getBirth() == null){
+                birthYear = 1994;
+            } else
+                birthYear = person.getBirth().getYear();
 
             boolean success = fillHelp(generations, username, person, birthYear);
 
@@ -326,6 +333,9 @@ public class Services {
         Person[] persons = input.getPersons();
         Event[] events = input.getEvents();
 
+        if(users == null || persons == null || events == null)
+            return new LoadResponse(INVALID_REQUEST_DATA);
+
         for(User u : users){
             if(!userDAO.add(u))
                 return new LoadResponse(INVALID_REQUEST_DATA);
@@ -358,6 +368,10 @@ public class Services {
 
         if (authTokenDAO.retrieveUsingAuthToken(authToken) != null) {
             if (personID != null) {      //If ID is given
+                if(personDAO.retrieve(personID) == null){
+                    return new PersonResponse(NO_PERSONID_ERROR, null, null, null, null, null, ' ', null, null, null);
+                }
+
                 if(authTokenDAO.retrieveUsingAuthToken(authToken).getUsername().equals(personDAO.retrieve(personID).getDescendant())) {          //If authtoken user matches descendant
                     AuthToken authTokenObject = authTokenDAO.retrieveUsingAuthToken(authToken);
                     Person person = personDAO.retrieve(personID);
@@ -387,6 +401,10 @@ public class Services {
 
         if(authTokenDAO.retrieveUsingAuthToken(authToken) != null){         //If authtoken is valid
             if(eventID != null) {      //If ID is given
+                if(eventDAO.retrieve(eventID) == null){
+                    return new EventResponse(NO_EVENTID_ERROR, null, null, null, null,
+                            null, null, null, null, null, 0);
+                }
 
                 if(authTokenDAO.retrieveUsingAuthToken(authToken).getUsername().equals(eventDAO.retrieve(eventID).getDescendant())) {      //If authtoken user matches descendant
                     AuthToken authTokenObject = authTokenDAO.retrieveUsingAuthToken(authToken);

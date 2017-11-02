@@ -98,10 +98,10 @@ public class EventDAO {
 
     /**
      * Retrieve all the events attached to a user
-     * @param username  The user connected with the request
+     * @param descendant  The user connected with the request
      * @return  Returns those events in an array
      */
-    public Event[] retrieveEvents(String username){
+    public Event[] retrieveEvents(String descendant){
 
         ArrayList<Event> events = new ArrayList(); //If null, not added to dao and will be created
 
@@ -115,13 +115,13 @@ public class EventDAO {
             c.setAutoCommit(false);
 
             sql = c.prepareStatement("SELECT * FROM Event WHERE Descendant=?;" );
-            sql.setString(1, username);
+            sql.setString(1, descendant);
 
             rs = sql.executeQuery();
 
             while ( rs.next() ) {
                 String event_id = rs.getString("Event_Id");
-                String descendant = rs.getString("Descendant");
+                String desc = rs.getString("Descendant");
                 String person_id  = rs.getString("Person_Id");
                 double latitude = rs.getDouble("Latitude");
                 double longitude = rs.getDouble("Longitude");
@@ -130,7 +130,7 @@ public class EventDAO {
                 String event_type = rs.getString("Event_Type");
                 int year = rs.getInt("Year");
 
-                events.add(new Event(event_id, descendant, person_id, latitude, longitude, country, city, event_type, year));
+                events.add(new Event(event_id, desc, person_id, latitude, longitude, country, city, event_type, year));
             }
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
@@ -146,7 +146,11 @@ public class EventDAO {
         }
 
         Event[] returnEvents = new Event[events.size()];
-        return events.toArray(returnEvents);
+        if(returnEvents.length == 0){
+            return null;
+        } else {
+            return events.toArray(returnEvents);
+        }
     }
 
     /**
@@ -182,46 +186,6 @@ public class EventDAO {
             sql.executeUpdate();
 
             c.commit();
-            success = true;
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            e.printStackTrace();
-        } finally{
-            try {
-                sql.close();
-                c.close();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-        }
-
-        return success;
-    }
-
-    /**
-     * Deletes all the data attached to the amount of generations from the specified user
-     * @param username  Username as a string
-     * @return true or false if it worked
-     */
-    public boolean deleteData(String username){
-        boolean success = false;
-
-        Connection c = null;
-        PreparedStatement sql = null;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:familymapserver.db");
-            c.setAutoCommit(false);
-
-            sql = c.prepareStatement("DELETE FROM Event WHERE Username=?;");
-            sql.setString(1, username);
-
-
-            sql.executeUpdate();
-
-            c.commit();
-
             success = true;
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -283,7 +247,7 @@ public class EventDAO {
      * @param personID      The ID of the person
      * @return  An array of event objects
      */
-    public Event[] getEventsFromPersonID(String personID){
+    public Event[] retrieveEventsUsingPersonID(String personID){
 
         ArrayList<Event> events = new ArrayList(); //If null, not added to dao and will be created
 
@@ -330,6 +294,10 @@ public class EventDAO {
         }
 
         Event[] returnEvents = new Event[events.size()];
-        return events.toArray(returnEvents);
+        if(returnEvents.length == 0){
+            return null;
+        } else {
+            return events.toArray(returnEvents);
+        }
     }
 }

@@ -35,6 +35,15 @@ public class EventResponse {
         else
             this.year = "" + year;    }
 
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public Event[] getEvents() {
         return events;
     }
